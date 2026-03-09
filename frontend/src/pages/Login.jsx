@@ -7,14 +7,16 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const login = async () => {
+    // validation
+    if (!email || !password) {
+      alert("Please fill all required fields");
+      return;
+    }
+
     try {
-      const res = await API.post("/auth/login", {
-        email,
-        password,
-      });
+      const res = await API.post("/auth/login", { email, password });
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
@@ -25,30 +27,41 @@ function Login() {
         navigate("/candidate");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      alert("Invalid email or password");
     }
   };
 
   return (
-    <div className="auth-form">
+    <form
+      className="auth-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        login();
+      }}
+    >
       <h2>Login</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+      <input
+        type="email"
+        placeholder="Email address"
+        value={email}
+        autoFocus
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
       <input
         type="password"
         placeholder="Password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button onClick={login}>Login</button>
+      <button type="submit">Login</button>
 
       <p>
-        Don't have account? <Link to="/register">Register</Link>
+        Don't have an account? <Link to="/register">Sign Up</Link>
       </p>
-    </div>
+    </form>
   );
 }
 

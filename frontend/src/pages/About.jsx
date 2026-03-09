@@ -1,11 +1,15 @@
 function About() {
   return (
     <div className="page">
-      <h1>About CodeHire</h1>
+      <b>
+        <h1>
+          <span style={{ color: "#2563eb" }}>About CodeHire</span>
+        </h1>
+      </b>
 
       <p>
-        CodeHire is a technical hiring platform that enables organizations to
-        conduct coding assessments and evaluate developer skills efficiently. It
+        CodeHire is a technical assessment platform that enables organizations
+        to evaluate developer skills through structured coding assignments. It
         provides an environment where candidates can solve coding problems,
         answer technical questions, and submit their solutions through a web
         interface.
@@ -18,14 +22,9 @@ function About() {
       </p>
 
       <p>
-        This project was built as a full-stack MERN application to demonstrate
-        modern web development practices including authentication, protected
-        routes, database integration, and dynamic user interfaces.
-      </p>
-
-      <p>
         CodeHire aims to simulate a simplified version of real-world coding
-        assessment platforms used by companies to screen and hire developers.
+        assessment platforms used by companies to screen candidates before
+        interviews.
       </p>
     </div>
   );

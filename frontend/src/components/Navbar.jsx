@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function Navbar() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [open, setOpen] = useState(false);
+  const menuRef = useRef();
 
   const logout = () => {
     localStorage.clear();
@@ -21,6 +22,20 @@ function Navbar() {
       navigate("/candidate");
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <nav className="navbar">
@@ -40,10 +55,10 @@ function Navbar() {
         )}
 
         {!user && <Link to="/login">Login</Link>}
-        {!user && <Link to="/register">Register</Link>}
+        {!user && <Link to="/register">SignUp</Link>}
 
         {user && (
-          <div className="user-menu">
+          <div className="user-menu" ref={menuRef}>
             <span className="username" onClick={() => setOpen(!open)}>
               {user.name}
             </span>

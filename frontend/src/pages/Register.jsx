@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../api/api";
 
 function Register() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -10,8 +13,6 @@ function Register() {
     companyName: "",
   });
 
-  const [msg, setMsg] = useState("");
-
   const change = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -19,32 +20,56 @@ function Register() {
   const submit = async (e) => {
     e.preventDefault();
 
+    // validation
+    if (!form.name || !form.email || !form.password) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    if (form.role === "admin" && !form.companyName) {
+      alert("Please enter company name");
+      return;
+    }
+
     try {
       await API.post("/auth/register", form);
-      setMsg("Registered successfully");
+
+      alert("Sign up successful. Please login to continue.");
+
+      navigate("/login");
     } catch (err) {
-      setMsg("Registration failed , email already used !");
+      alert("Sign up failed. Email may already exist.");
     }
   };
 
   return (
     <form className="auth-form" onSubmit={submit}>
-      <h2>Register</h2>
+      <h2>Sign Up</h2>
 
-      {msg && <p style={{ color: "red" }}>{msg}</p>}
+      <input
+        name="name"
+        placeholder="Name"
+        value={form.name}
+        onChange={change}
+      />
 
-      <input name="name" placeholder="Name" onChange={change} />
-
-      <input name="email" placeholder="Email" onChange={change} />
+      <input
+        name="email"
+        type="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={change}
+      />
 
       <input
         name="password"
         type="password"
         placeholder="Password"
+        value={form.password}
         onChange={change}
       />
 
-      <select name="role" onChange={change}>
+      <select name="role" value={form.role} onChange={change}>
         <option value="candidate">Candidate</option>
         <option value="admin">Admin</option>
       </select>
@@ -53,11 +78,12 @@ function Register() {
         <input
           name="companyName"
           placeholder="Company Name"
+          value={form.companyName}
           onChange={change}
         />
       )}
 
-      <button>Register</button>
+      <button type="submit">Sign Up</button>
     </form>
   );
 }

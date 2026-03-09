@@ -15,6 +15,7 @@ body {
   margin: 40px auto;
   padding: 20px;
 }
+
 .page > p {
   line-height: 1.7;
   margin-bottom: 15px;
@@ -43,15 +44,21 @@ body {
   align-items: center;
 }
 
+/* Navbar links */
+
 .nav-links a {
   color: white;
   text-decoration: none;
   font-size: 15px;
+  transition: color 0.2s ease;
 }
 
 .nav-links a:hover {
+  color: #38bdf8;
   text-decoration: underline;
 }
+
+/* Dashboard link */
 
 .nav-link {
   color: white;
@@ -60,8 +67,11 @@ body {
 }
 
 .nav-link:hover {
+  color: #38bdf8;
   text-decoration: underline;
 }
+
+/* Username */
 
 .user-menu {
   position: relative;
@@ -71,7 +81,15 @@ body {
   color: white;
   cursor: pointer;
   font-size: 15px;
+  transition: color 0.2s ease;
 }
+
+.username:hover {
+  color: #38bdf8;
+  text-decoration: underline;
+}
+
+/* Dropdown */
 
 .dropdown {
   position: absolute;
@@ -179,6 +197,8 @@ button:hover {
   flex-wrap: wrap;
 }
 
+/*  AUTH FORMS */
+
 .auth-form {
   max-width: 400px;
   margin: 60px auto;
@@ -196,6 +216,8 @@ button:hover {
 .auth-form button {
   width: 100%;
 }
+
+/*  EDITOR */
 
 .editor-container {
   margin-top: 20px;
@@ -254,6 +276,21 @@ button:hover {
 .table th {
   background: #f1f5f9;
 }
+.section {
+  margin-top: 40px;
+}
+.job-card {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* MOBILE */
 
 @media (max-width: 768px) {
   .navbar {

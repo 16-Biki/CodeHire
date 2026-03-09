@@ -1,17 +1,46 @@
 import { useEffect, useState } from "react";
-import API from "../api/api"; // use axios instance with token
+import { useNavigate } from "react-router-dom";
+import API from "../api/api";
 import CreateJob from "../components/CreateJob";
 
 function AdminDashboard() {
   const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch Jobs
+  const navigate = useNavigate();
+
   const fetchJobs = async () => {
     try {
+      setLoading(true);
+
       const res = await API.get("/jobs");
-      setJobs(res.data);
+
+      const jobsData = res.data;
+
+      // fetch submission count for each job
+      const jobsWithCounts = await Promise.all(
+        jobsData.map(async (job) => {
+          try {
+            const submissions = await API.get(`/submissions/${job._id}`);
+
+            return {
+              ...job,
+              submissionCount: submissions.data.length,
+            };
+          } catch {
+            return {
+              ...job,
+              submissionCount: 0,
+            };
+          }
+        }),
+      );
+
+      setJobs(jobsWithCounts);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to fetch jobs:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -19,7 +48,6 @@ function AdminDashboard() {
     fetchJobs();
   }, []);
 
-  // Delete Job
   const deleteJob = async (id) => {
     if (!window.confirm("Are you sure you want to delete this job?")) return;
 
@@ -28,7 +56,7 @@ function AdminDashboard() {
 
       alert("Job deleted successfully");
 
-      fetchJobs(); // refresh jobs
+      fetchJobs();
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || "Delete failed");
@@ -39,39 +67,39 @@ function AdminDashboard() {
     <div className="page">
       <h1>Admin Dashboard</h1>
 
-      {/* Create Job */}
       <CreateJob fetchJobs={fetchJobs} />
 
       <h2>Jobs</h2>
 
-      {jobs.length === 0 && <p>No jobs available</p>}
+      {loading && <p>Loading jobs...</p>}
 
-      {jobs.map((job) => (
-        <div className="card" key={job._id}>
-          <h3>{job.title}</h3>
+      {!loading && jobs.length === 0 && <p>No jobs available</p>}
 
-          <p>{job.description}</p>
+      {!loading &&
+        jobs.map((job) => (
+          <div className="card" key={job._id}>
+            <h3>{job.title}</h3>
 
-          <p>
-            <b>Duration:</b> {job.duration || 30} minutes
-          </p>
+            <p>{job.description}</p>
 
-          <div className="admin-buttons">
-            <button
-              className="view-btn"
-              onClick={() =>
-                (window.location.href = `/admin/submissions/${job._id}`)
-              }
-            >
-              View Submissions
-            </button>
+            <p>
+              <b>Duration:</b> {job.duration || 30} minutes
+            </p>
 
-            <button className="delete-btn" onClick={() => deleteJob(job._id)}>
-              Delete Job
-            </button>
+            <div className="admin-buttons">
+              <button
+                className="view-btn"
+                onClick={() => navigate(`/admin/submissions/${job._id}`)}
+              >
+                View Submissions ({job.submissionCount})
+              </button>
+
+              <button className="delete-btn" onClick={() => deleteJob(job._id)}>
+                Delete Job
+              </button>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 }
