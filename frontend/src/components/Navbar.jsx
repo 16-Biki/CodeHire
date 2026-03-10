@@ -45,8 +45,9 @@ function Navbar() {
 
       <div className="nav-links">
         <Link to="/">Home</Link>
-
         <Link to="/about">About</Link>
+
+        {user?.role === "candidate" && <Link to="/jobs">Available Jobs</Link>}
 
         {user && (
           <span className="nav-link" onClick={goDashboard}>
@@ -60,15 +61,13 @@ function Navbar() {
         {user && (
           <div className="user-menu" ref={menuRef}>
             <span className="username" onClick={() => setOpen(!open)}>
-              {user.name}
+              {user.name}▼
             </span>
 
             {open && (
               <div className="dropdown">
                 <p>{user.name}</p>
-
                 <p>{user.email}</p>
-
                 <button onClick={logout}>Logout</button>
               </div>
             )}

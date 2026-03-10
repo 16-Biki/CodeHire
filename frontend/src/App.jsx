@@ -15,6 +15,8 @@ import TestPage from "./pages/TestPage";
 import AddQuestions from "./pages/AddQuestions";
 import Submissions from "./pages/Submissions";
 
+import Jobs from "./pages/Jobs";
+
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +24,9 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
+
+        <Route path="/jobs" element={<Jobs />} />
+
         <Route path="/about" element={<About />} />
 
         <Route path="/login" element={<Login />} />

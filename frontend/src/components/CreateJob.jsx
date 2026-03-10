@@ -1,7 +1,7 @@
 import { useState } from "react";
 import API from "../api/api";
 
-function CreateJob() {
+function CreateJob({ fetchJobs }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
@@ -10,7 +10,6 @@ function CreateJob() {
 
   const [questions, setQuestions] = useState([]);
 
-  // Step 1 → Generate question fields
   const generateQuestions = () => {
     if (!questionCount || questionCount <= 0) {
       alert("Enter number of questions");
@@ -31,19 +30,15 @@ function CreateJob() {
     setQuestions(newQuestions);
   };
 
-  // Update question
   const updateQuestion = (index, field, value) => {
     const updated = [...questions];
     updated[index][field] = value;
-
     setQuestions(updated);
   };
 
-  // Update MCQ option
   const updateOption = (qIndex, optIndex, value) => {
     const updated = [...questions];
     updated[qIndex].options[optIndex] = value;
-
     setQuestions(updated);
   };
 
@@ -68,7 +63,9 @@ function CreateJob() {
       });
 
       alert("Job Created Successfully");
-
+      // refresh job list
+      fetchJobs();
+      // reset form
       setTitle("");
       setDescription("");
       setQuestionCount("");
@@ -76,6 +73,7 @@ function CreateJob() {
       setQuestions([]);
     } catch (err) {
       console.error(err);
+      alert("Failed to create job");
     }
   };
 
@@ -83,23 +81,17 @@ function CreateJob() {
     <div className="card">
       <h2>Create Job</h2>
 
-      {/* TITLE */}
-
       <input
         placeholder="Job Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
 
-      {/* DESCRIPTION */}
-
       <textarea
         placeholder="Job Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-
-      {/* NUMBER OF QUESTIONS */}
 
       <label>How many questions do you want to add for this role?</label>
 
@@ -110,13 +102,9 @@ function CreateJob() {
         onChange={(e) => setQuestionCount(Number(e.target.value))}
       />
 
-      {/* BUTTON */}
-
       {questions.length === 0 && (
         <button onClick={generateQuestions}>Set Questions</button>
       )}
-
-      {/* QUESTIONS */}
 
       {questions.map((q, index) => (
         <div key={index} className="question-box">
@@ -157,11 +145,9 @@ function CreateJob() {
         </div>
       ))}
 
-      {/* TEST DURATION AFTER QUESTIONS */}
-
       {questions.length > 0 && (
         <>
-          <label>Test duration (minutes) for this test ?</label>
+          <label>Test duration (minutes)</label>
 
           <input
             type="number"

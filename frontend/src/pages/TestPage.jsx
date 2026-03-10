@@ -49,7 +49,7 @@ function TestPage() {
 
         if (prev <= 1) {
           clearInterval(timer);
-          submitTest();
+          submitTest(true);
           return 0;
         }
 
@@ -60,7 +60,7 @@ function TestPage() {
     return () => clearInterval(timer);
   }, [timeLeft, submitted]);
 
-  // Handle Answer
+  // Save Answer
   const handleAnswer = (index, value) => {
     setAnswers((prev) => ({
       ...prev,
@@ -69,8 +69,18 @@ function TestPage() {
   };
 
   // Submit Test
-  const submitTest = async () => {
+  const submitTest = async (autoSubmit = false) => {
     if (submitted) return;
+
+    // Validate answers only if user clicked submit
+    if (!autoSubmit) {
+      for (let i = 0; i < job.questions.length; i++) {
+        if (!answers[i] || answers[i].trim() === "") {
+          alert(`Please answer Question ${i + 1}`);
+          return;
+        }
+      }
+    }
 
     try {
       const formatted = Object.keys(answers).map((key) => ({
@@ -124,7 +134,10 @@ function TestPage() {
 
             {/* CODING */}
             {q.type === "coding" && (
-              <CodeEditor submit={(code) => handleAnswer(index, code)} />
+              <CodeEditor
+                value={answers[index] || ""}
+                onChange={(code) => handleAnswer(index, code)}
+              />
             )}
 
             {/* TEXT */}
@@ -137,23 +150,26 @@ function TestPage() {
             )}
 
             {/* MCQ */}
-            {q.type === "mcq" &&
-              q.options.map((opt, i) => (
-                <label key={i} style={{ display: "block" }}>
-                  <input
-                    type="radio"
-                    name={`q${index}`}
-                    value={opt}
-                    checked={answers[index] === opt}
-                    onChange={() => handleAnswer(index, opt)}
-                  />
-                  {opt}
-                </label>
-              ))}
+            {q.type === "mcq" && (
+              <div className="mcq-options">
+                {q.options.map((opt, i) => (
+                  <label key={i} className="mcq-option">
+                    <input
+                      type="radio"
+                      name={`q${index}`}
+                      value={opt}
+                      checked={answers[index] === opt}
+                      onChange={() => handleAnswer(index, opt)}
+                    />
+                    <span>{opt}</span>
+                  </label>
+                ))}
+              </div>
+            )}
           </div>
         ))}
 
-      <button onClick={submitTest} disabled={submitted}>
+      <button onClick={() => submitTest(false)} disabled={submitted}>
         {submitted ? "Submitted" : "Submit Test"}
       </button>
     </div>

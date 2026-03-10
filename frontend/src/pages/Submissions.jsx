@@ -6,14 +6,17 @@ function Submissions() {
   const { jobId } = useParams();
 
   const [subs, setSubs] = useState([]);
+  const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSubmissions = async () => {
+    const fetchData = async () => {
       try {
-        const res = await API.get(`/submissions/${jobId}`);
+        const jobRes = await API.get(`/jobs/${jobId}`);
+        setJob(jobRes.data);
 
-        setSubs(res.data);
+        const subRes = await API.get(`/submissions/${jobId}`);
+        setSubs(subRes.data);
       } catch (err) {
         alert("Failed to load submissions");
       } finally {
@@ -21,7 +24,7 @@ function Submissions() {
       }
     };
 
-    fetchSubmissions();
+    fetchData();
   }, [jobId]);
 
   if (loading) {
@@ -55,8 +58,11 @@ function Submissions() {
           <hr />
 
           {s.answers.map((a, i) => (
-            <div key={i} style={{ marginTop: "15px" }}>
-              <h4>Question {a.questionIndex + 1}</h4>
+            <div key={i} style={{ marginTop: "20px" }}>
+              <h4>
+                Q{a.questionIndex + 1}.{" "}
+                {job?.questions?.[a.questionIndex]?.question}
+              </h4>
 
               <pre
                 style={{
@@ -65,6 +71,7 @@ function Submissions() {
                   padding: "15px",
                   borderRadius: "6px",
                   overflowX: "auto",
+                  marginTop: "8px",
                 }}
               >
                 {a.answer}

@@ -1,30 +1,26 @@
 function About() {
   return (
     <div className="page">
-      <b>
-        <h1>
-          <span style={{ color: "#2563eb" }}>About CodeHire</span>
-        </h1>
-      </b>
+      <h1 style={{ color: "#2563eb" }}>About CodeHire</h1>
 
       <p>
-        CodeHire is a technical assessment platform that enables organizations
-        to evaluate developer skills through structured coding assignments. It
-        provides an environment where candidates can solve coding problems,
-        answer technical questions, and submit their solutions through a web
-        interface.
+        CodeHire is built to simplify the technical hiring process by providing
+        a structured environment where companies can assess developer skills
+        efficiently. The platform focuses on helping organizations make better
+        hiring decisions through practical technical evaluations.
       </p>
 
       <p>
-        The platform includes features such as job creation, customizable test
-        questions (coding, MCQ, and text-based), a real-time code editor,
-        time-limited assessments, and submission tracking for administrators.
+        Instead of relying only on resumes or theoretical interviews, CodeHire
+        allows candidates to demonstrate their abilities by solving real coding
+        and problem-solving challenges. This approach helps employers gain a
+        clearer understanding of a candidate's technical capabilities.
       </p>
 
       <p>
-        CodeHire aims to simulate a simplified version of real-world coding
-        assessment platforms used by companies to screen candidates before
-        interviews.
+        With a streamlined assessment workflow and organized submission review,
+        CodeHire aims to make the developer screening process faster, more
+        transparent, and more effective for both recruiters and candidates.
       </p>
     </div>
   );

@@ -1,21 +1,9 @@
-import { useState } from "react";
 import Editor from "@monaco-editor/react";
 
-function CodeEditor({ submit }) {
-  const [code, setCode] = useState("// Write your code here in JavaScript");
-
-  const handleSubmit = () => {
-    if (
-      !code ||
-      code.trim() === "" ||
-      code === "// Write your code here in JavaScript"
-    ) {
-      alert("Please write some code first");
-      return;
-    }
-
-    submit(code);
-    alert("Code saved successfully");
+function CodeEditor({ value, onChange }) {
+  const handleEditorDidMount = (editor) => {
+    editor.setPosition({ lineNumber: 2, column: 1 });
+    editor.focus();
   };
 
   return (
@@ -26,11 +14,10 @@ function CodeEditor({ submit }) {
         height="400px"
         language="javascript"
         theme="vs-dark"
-        value={code}
-        onChange={(value) => setCode(value || "")}
+        value={value || "// Write your code here in JavaScript\n"}
+        onChange={(val) => onChange(val || "")}
+        onMount={handleEditorDidMount}
       />
-
-      <button onClick={handleSubmit}>Submit Code</button>
     </div>
   );
 }

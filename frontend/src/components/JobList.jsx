@@ -4,11 +4,23 @@ import JobCard from "./JobCard";
 
 function JobList() {
   const [jobs, setJobs] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const fetchJobs = async () => {
+    const res = await API.get("/jobs");
+
+    if (user?.role === "admin") {
+      const filtered = res.data.filter(
+        (job) => job.companyId === user.companyId,
+      );
+      setJobs(filtered);
+    } else {
+      setJobs(res.data);
+    }
+  };
 
   useEffect(() => {
-    API.get("/jobs").then((res) => {
-      setJobs(res.data);
-    });
+    fetchJobs();
   }, []);
 
   return (

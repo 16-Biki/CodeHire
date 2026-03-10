@@ -1,13 +1,17 @@
 import express from "express";
-import mongoose from "mongoose";
 import Job from "../models/Job.js";
 import Submission from "../models/Submission.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
+/* CREATE JOB */
 router.post("/", protect, async (req, res) => {
   try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Only admin can create jobs" });
+    }
+
     const job = await Job.create({
       ...req.body,
       companyId: req.user.companyId,
@@ -19,14 +23,23 @@ router.post("/", protect, async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+/* GET JOBS */
+router.get("/", protect, async (req, res) => {
   try {
-    const jobs = await Job.find().lean();
+    let jobs;
+
+    if (req.user.role === "admin") {
+      jobs = await Job.find({
+        companyId: req.user.companyId,
+      }).lean();
+    } else {
+      jobs = await Job.find().lean();
+    }
 
     const jobsWithCounts = await Promise.all(
       jobs.map(async (job) => {
         const count = await Submission.countDocuments({
-          jobId: { $eq: new mongoose.Types.ObjectId(job._id) },
+          jobId: job._id,
         });
 
         return {
@@ -42,7 +55,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+/* GET SINGLE JOB */
+router.get("/:id", protect, async (req, res) => {
   try {
     const job = await Job.findById(req.params.id);
 
@@ -56,6 +70,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+/* DELETE JOB */
 router.delete("/:id", protect, async (req, res) => {
   try {
     const job = await Job.findById(req.params.id);

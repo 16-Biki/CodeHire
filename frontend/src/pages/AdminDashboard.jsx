@@ -9,34 +9,21 @@ function AdminDashboard() {
 
   const navigate = useNavigate();
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const fetchJobs = async () => {
     try {
       setLoading(true);
 
       const res = await API.get("/jobs");
-
-      const jobsData = res.data;
-
-      // fetch submission count for each job
-      const jobsWithCounts = await Promise.all(
-        jobsData.map(async (job) => {
-          try {
-            const submissions = await API.get(`/submissions/${job._id}`);
-
-            return {
-              ...job,
-              submissionCount: submissions.data.length,
-            };
-          } catch {
-            return {
-              ...job,
-              submissionCount: 0,
-            };
-          }
-        }),
+      const filteredJobs = res.data.filter(
+        (job) =>
+          job.companyId &&
+          user.companyId &&
+          job.companyId.toString() === user.companyId.toString(),
       );
 
-      setJobs(jobsWithCounts);
+      setJobs(filteredJobs);
     } catch (err) {
       console.error("Failed to fetch jobs:", err);
     } finally {
@@ -69,7 +56,7 @@ function AdminDashboard() {
 
       <CreateJob fetchJobs={fetchJobs} />
 
-      <h2>Jobs</h2>
+      <h2>Active Job Listings ({jobs.length})</h2>
 
       {loading && <p>Loading jobs...</p>}
 
@@ -91,7 +78,7 @@ function AdminDashboard() {
                 className="view-btn"
                 onClick={() => navigate(`/admin/submissions/${job._id}`)}
               >
-                View Submissions ({job.submissionCount})
+                View Submissions ({job.submissionCount || 0})
               </button>
 
               <button className="delete-btn" onClick={() => deleteJob(job._id)}>
