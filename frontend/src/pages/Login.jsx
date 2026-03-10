@@ -7,15 +7,17 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false); // loading state
 
   const login = async () => {
-    // validation
     if (!email || !password) {
       alert("Please fill all required fields");
       return;
     }
 
     try {
+      setLoading(true); // start loading
+
       const res = await API.post("/auth/login", { email, password });
 
       localStorage.setItem("token", res.data.token);
@@ -28,6 +30,8 @@ function Login() {
       }
     } catch (err) {
       alert("Invalid email or password");
+    } finally {
+      setLoading(false); // stop loading
     }
   };
 
@@ -56,7 +60,9 @@ function Login() {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button type="submit">Login</button>
+      <button type="submit" disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
+      </button>
 
       <p>
         Don't have an account? <Link to="/register">Sign Up</Link>
