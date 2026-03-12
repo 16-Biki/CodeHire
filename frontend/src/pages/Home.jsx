@@ -1,24 +1,42 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 function Home() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const firstVisit = sessionStorage.getItem("visited");
+
+    if (!firstVisit) {
+      sessionStorage.setItem("visited", "true");
+
+      if (user?.role === "admin") {
+        navigate("/admin");
+      } else if (user?.role === "candidate") {
+        navigate("/jobs");
+      }
+    }
+  }, []);
+
   return (
     <div className="page">
       <h1 style={{ color: "#2563eb" }}>CodeHire</h1>
 
       <p>
         CodeHire is a web-based technical assessment platform designed to help
-        companies evaluate developer skills through structured coding tests and
-        technical assignments.
+        companies evaluate developer skills through coding tests and technical
+        assignments.
       </p>
 
       <p>
-        The platform allows administrators to create job roles, design custom
-        coding or theoretical questions, and assign time-limited tests to
-        candidates in a controlled environment.
+        Administrators can create job roles, design coding questions, and assign
+        time-limited tests to candidates.
       </p>
 
       <p>
-        Candidates can solve problems directly in the browser using an
-        integrated code editor and submit their solutions for review. This helps
-        companies efficiently screen developers before the interview stage.
+        Candidates can solve coding challenges directly in the browser and
+        submit their solutions for review.
       </p>
     </div>
   );

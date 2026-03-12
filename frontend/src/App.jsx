@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -18,34 +18,19 @@ import Submissions from "./pages/Submissions";
 import Jobs from "./pages/Jobs";
 
 function App() {
-  const user = JSON.parse(localStorage.getItem("user"));
-
   return (
     <BrowserRouter>
       <Navbar />
 
       <Routes>
-        <Route
-          path="/"
-          element={
-            user ? (
-              user.role === "admin" ? (
-                <Navigate to="/admin" />
-              ) : (
-                <Navigate to="/jobs" />
-              )
-            ) : (
-              <Home />
-            )
-          }
-        />
-
-        <Route path="/jobs" element={<Jobs />} />
+        {/* Home routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
 
         <Route path="/about" element={<About />} />
+        <Route path="/jobs" element={<Jobs />} />
 
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
 
         <Route

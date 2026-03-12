@@ -10,6 +10,7 @@ function Navbar() {
 
   const logout = () => {
     localStorage.clear();
+    sessionStorage.clear();
     navigate("/login");
   };
 
@@ -39,12 +40,13 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <Link className="logo" to="/">
+      <Link className="logo" to="/home">
         CodeHire
       </Link>
 
       <div className="nav-links">
-        <Link to="/">Home</Link>
+        <Link to="/home">Home</Link>
+
         <Link to="/about">About</Link>
 
         {user?.role === "candidate" && <Link to="/jobs">Available Jobs</Link>}
@@ -61,7 +63,7 @@ function Navbar() {
         {user && (
           <div className="user-menu" ref={menuRef}>
             <span className="username" onClick={() => setOpen(!open)}>
-              {user.name}▼
+              {user.name} ▼
             </span>
 
             {open && (
