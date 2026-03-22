@@ -3,6 +3,7 @@ import API from "../api/api";
 
 function CandidateDashboard() {
   const [appliedJobs, setAppliedJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchApplied = async () => {
@@ -11,6 +12,8 @@ function CandidateDashboard() {
         setAppliedJobs(res.data);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -23,30 +26,37 @@ function CandidateDashboard() {
 
       <h2>Your Applications</h2>
 
-      {appliedJobs.length === 0 && (
+      {loading && (
+        <div className="card">
+          <p>Loading applications...</p>
+        </div>
+      )}
+
+      {!loading && appliedJobs.length === 0 && (
         <div className="card">
           <p>You have not applied to any job yet.</p>
         </div>
       )}
 
-      {appliedJobs.map((sub) => (
-        <div key={sub._id} className="card">
-          <h3>{sub.jobId?.title}</h3>
+      {!loading &&
+        appliedJobs.map((sub) => (
+          <div key={sub._id} className="card">
+            <h3>{sub.jobId?.title}</h3>
 
-          <p>{sub.jobId?.description}</p>
+            <p>{sub.jobId?.description}</p>
 
-          <p>
-            <b>Status:</b>{" "}
-            <span style={{ color: "#16a34a", fontWeight: "bold" }}>
-              Submitted
-            </span>
-          </p>
+            <p>
+              <b>Status:</b>{" "}
+              <span style={{ color: "#16a34a", fontWeight: "bold" }}>
+                Submitted
+              </span>
+            </p>
 
-          <p>
-            <b>Submitted At:</b> {new Date(sub.submittedAt).toLocaleString()}
-          </p>
-        </div>
-      ))}
+            <p>
+              <b>Submitted At:</b> {new Date(sub.submittedAt).toLocaleString()}
+            </p>
+          </div>
+        ))}
     </div>
   );
 }
