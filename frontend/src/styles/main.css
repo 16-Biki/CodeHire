@@ -283,6 +283,55 @@ button:hover {
   text-align: right;
 }
 
+.job-list-container {
+  padding: 0;
+  border-radius: 0;
+
+  max-width: 800px;
+  width: 100%;
+
+  margin: 40px auto;
+
+  background: transparent;
+  box-shadow: none;
+}
+
+.job-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.job-list .job-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  border-left: 5px solid #2563eb;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: all 0.25s ease;
+}
+
+.job-list .job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+.job-list .job-card p {
+  color: #475569;
+  line-height: 1.7;
+}
+
+.job-list .job-card button {
+  margin-top: 12px;
+}
+
+.job-status {
+  text-align: center;
+  color: #64748b;
+  margin-top: 15px;
+}
+
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;

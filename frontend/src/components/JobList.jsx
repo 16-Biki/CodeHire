@@ -33,14 +33,20 @@ function JobList() {
   }, []);
 
   return (
-    <div className="job-list">
-      {loading && <p>Loading jobs...</p>}
+    <div className="job-list-container">
+      {loading && <p className="job-status">Loading jobs...</p>}
 
-      {!loading && jobs.length === 0 && <p>No jobs available</p>}
+      {!loading && jobs.length === 0 && (
+        <p className="job-status">No jobs available</p>
+      )}
 
-      {!loading &&
-        jobs.length > 0 &&
-        jobs.map((job) => <JobCard key={job._id} job={job} />)}
+      {!loading && jobs.length > 0 && (
+        <div className="job-list">
+          {jobs.map((job) => (
+            <JobCard key={job._id} job={job} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
